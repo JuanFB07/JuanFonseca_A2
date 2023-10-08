@@ -10,3 +10,43 @@ data <-
   read.csv(paste0(parentFolder,"/data/diabetes_012.csv"))
 
 data$Diabetes_012 <- ifelse(data$Diabetes_012 == 0, 0, 1)
+
+set.seed(10)
+data1 <- data[sample(nrow(data), 3000), ]
+
+table(data1$Sex)
+table(data1$Smoker)
+table(data1$CholCheck)
+
+
+pairs.panels(data1 [c("Age", "BMI", "Education", "GenHlth")],
+             pch = 21,
+             bg = c("red", "green3", "blue", "orange" , "yellow")[unclass(data1$Diabetes_012)])
+### KNN Models and Experiments to Find Diabetes #####################################################################
+
+
+## selection of 1500 samples of each factor of the dataset
+set.seed(1)
+data_estratificada <- data %>%
+  group_by(Diabetes_012) %>%
+  sample_n(1500, replace = TRUE) %>%
+  ungroup()
+
+
+sample.index <- sample(1:nrow(data_estratificada)
+                       ,nrow(data_estratificada)*0.7
+                       ,replace = F)
+
+
+predictors <- c("HighBP", "HighChol", "CholCheck", "BMI", "Smoker", "Stroke", "HeartDiseaseorAttack", "PhysActivity", "Fruits", "Veggies", "HvyAlcoholConsump", "AnyHealthcare", "NoDocbcCost", "GenHlth", "MentHlth", "PhysHlth", "DiffWalk", "Sex", "Age", "Education", "Income")
+
+# Original data
+train.data <- data_estratificada[sample.index, c(predictors, "Diabetes_012"), drop = FALSE]
+test.data <- data_estratificada[-sample.index, c(predictors, "Diabetes_012"), drop = FALSE]
+
+
+train.data$Diabetes_012 <- factor(train.data$Diabetes_012)
+test.data$Diabetes_012 <- factor(test.data$Diabetes_012)
+
+
+
