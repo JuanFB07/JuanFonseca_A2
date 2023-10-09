@@ -91,6 +91,27 @@ knnPrediccion2 <- predict(knnFit2, newdata = test.data2)
 # Creates the confusion matrix
 confusionMatrix(data = knnPrediccion2, reference = test.data2$Diabetes_012)
 
+### Third Model
+
+predictors_to_remove2 <- c("ChoclCheck", "MentHlth","PhysHlth", "Fruits", "Veggies")
+train.data3 <- train.data2[, !(names(train.data2) %in% predictors_to_remove2)]
+test.data3 <- test.data2[, !(names(test.data2) %in% predictors_to_remove2)]
+
+ctrl2 <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
+knnFit3 <- train(Diabetes_012 ~ .
+                 , data = train.data3
+                 , method = "knn", trControl = ctrl2
+                 , preProcess = c("range") # c("center", "scale") for z-score
+                 , tuneLength = 20)
+
+plot(knnFit3)
+
+#Ejecutar Prediccion
+knnPred <- predict(knnFit3, newdata = test.data3)
+
+#Crear Matriz confusion
+confusionMatrix(data = knnPred, reference = test.data3$Diabetes_012)
+
 
 
 
