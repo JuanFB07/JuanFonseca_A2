@@ -22,11 +22,13 @@ table(data1$CholCheck)
 pairs.panels(data1 [c("Age", "BMI", "Education", "GenHlth")],
              pch = 21,
              bg = c("red", "green3", "blue", "orange" , "yellow")[unclass(data1$Diabetes_012)])
-### KNN Models and Experiments to Find Diabetes #####################################################################
+
+### Modelo KNN para detectar diabetes #####################################################################
 
 
-## selection of 1500 samples of each factor of the dataset
-set.seed(1)
+## Seleccionar 1500 muestras del dataseet
+
+set.seed(10)
 data_est <- data %>%
   group_by(Diabetes_012) %>%
   sample_n(1500, replace = TRUE) %>%
@@ -60,4 +62,13 @@ knnFit <- train(Diabetes_012 ~ .
                 , tuneLength = 50)
 
 plot(knnFit)
+
+# Ejecutar Predicciones
+knnPrediccion <- predict(knnFit, newdata = test.data)
+
+# Crear la matriz confusion
+confusionMatrix(data = knnPrediccion, reference = test.data$Diabetes_012)
+
+
+
 
