@@ -316,6 +316,10 @@ data_estratificada <- data %>%
   sample_n(1500, replace = TRUE) %>%
   ungroup()
 
+sample.index <- sample(1:nrow(data_estratificada)
+                       ,nrow(data_estratificada)*0.7
+                       ,replace = F)
+
 predictors <- c("HighBP", "HighChol", "CholCheck", "BMI", "Smoker", "Stroke", "Diabetes_012", "PhysActivity", "Fruits", "Veggies", "HvyAlcoholConsump", "AnyHealthcare", "NoDocbcCost", "GenHlth", "MentHlth", "PhysHlth", "DiffWalk", "Sex", "Age", "Education", "Income")
 
 # Original data
@@ -686,7 +690,7 @@ print(model)
 ```{r results=FALSE }
 ### Linear regression model MentHlth #####################################################################################
 
-et.seed(1)
+set.seed(1)
 data_estratificada2 <- data[sample(nrow(data), 3000), ]
 
 predictors <- colnames(data_estratificada2)[-16]
